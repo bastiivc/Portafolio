@@ -3,14 +3,13 @@
 import React, { useState } from 'react';
 import { profileData } from '@/data/profile';
 import { GithubIcon, LinkedinIcon } from '@/components/icons';
-import { Mail, Send, CheckCircle2, MessageSquare, Sparkles, AlertCircle, ExternalLink, Copy, Check, Info } from 'lucide-react';
+import { Mail, Send, CheckCircle2, MessageSquare, Sparkles, AlertCircle, ExternalLink, Copy, Check } from 'lucide-react';
 
 export const ContactSection: React.FC = () => {
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [activationInfo, setActivationInfo] = useState<string | null>(null);
   const [copiedEmail, setCopiedEmail] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -19,29 +18,49 @@ export const ContactSection: React.FC = () => {
 
     setLoading(true);
     setErrorMsg(null);
-    setActivationInfo(null);
+
+    const formToken = '6fccd57629dd513354bb7aca10999b24';
 
     try {
-      const res = await fetch('/api/contact', {
+      // Direct browser-side fetch to FormSubmit with activated token
+      const res = await fetch(`https://formsubmit.co/ajax/${formToken}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          _subject: formData.subject || `Nuevo mensaje de portafolio web de ${formData.name}`,
+          message: formData.message,
+          _template: 'table'
+        })
       });
 
       const data = await res.json();
 
-      if (res.ok && data.success) {
+      if (res.ok && (data.success === 'true' || data.success === true)) {
         setSubmitted(true);
-        if (data.activationNeeded) {
-          setActivationInfo(data.message);
-        }
         setFormData({ name: '', email: '', subject: '', message: '' });
       } else {
-        throw new Error(data.error || 'No se pudo procesar el formulario.');
+        // Fallback to server route /api/contact if client fetch returns error
+        const apiRes = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+        const apiData = await apiRes.json();
+        if (apiRes.ok && apiData.success) {
+          setSubmitted(true);
+          setFormData({ name: '', email: '', subject: '', message: '' });
+        } else {
+          throw new Error(data.message || apiData.error || 'Error al enviar el mensaje.');
+        }
       }
     } catch (err: any) {
       console.error('Submit error:', err);
-      setErrorMsg(err.message || 'No se pudo enviar el mensaje automáticamente. Puedes copiar el correo o usar tus redes sociales.');
+      setErrorMsg('No se pudo enviar el mensaje automáticamente. Puedes hacer clic abajo para copiar el correo directamente.');
     } finally {
       setLoading(false);
     }
@@ -79,27 +98,12 @@ export const ContactSection: React.FC = () => {
               <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
-              <h4 className="text-base font-bold text-white">¡Mensaje Recibido!</h4>
-              
-              {activationInfo ? (
-                <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-xs text-amber-300 space-y-1 text-left">
-                  <div className="flex items-center gap-1.5 font-semibold text-amber-400">
-                    <Info className="w-4 h-4 shrink-0" />
-                    <span>Activación de Formulario Requerida:</span>
-                  </div>
-                  <p>{activationInfo}</p>
-                </div>
-              ) : (
-                <p className="text-xs text-slate-300">
-                  Gracias por comunicarte con Bastián Mejías. Te responderé a la brevedad a tu correo electrónico.
-                </p>
-              )}
-
+              <h4 className="text-base font-bold text-white">¡Mensaje Enviado con Éxito!</h4>
+              <p className="text-xs text-slate-300">
+                Gracias por comunicarte con Bastián Mejías. Tu mensaje fue enviado a <strong>bastian.mejias.c@mail.pucv.cl</strong> y te responderé a la brevedad.
+              </p>
               <button
-                onClick={() => {
-                  setSubmitted(false);
-                  setActivationInfo(null);
-                }}
+                onClick={() => setSubmitted(false)}
                 className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-medium text-white transition-colors"
               >
                 Enviar otro mensaje
@@ -111,16 +115,16 @@ export const ContactSection: React.FC = () => {
                 <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300 space-y-2">
                   <div className="flex items-center gap-2 font-semibold text-rose-400">
                     <AlertCircle className="w-4 h-4 shrink-0" />
-                    <span>Error al enviar mensaje</span>
+                    <span>Error de comunicación</span>
                   </div>
                   <p>{errorMsg}</p>
                   <button
                     type="button"
                     onClick={copyEmailToClipboard}
-                    className="px-3 py-1 rounded bg-rose-500/20 hover:bg-rose-500/30 text-white font-medium text-[11px] flex items-center gap-1.5 transition-colors"
+                    className="px-3 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-white font-medium text-[11px] flex items-center gap-1.5 transition-colors border border-rose-500/30"
                   >
                     {copiedEmail ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                    <span>{copiedEmail ? '¡Correo Copiado!' : 'Copiar Correo (bastian.mejias.c@mail.pucv.cl)'}</span>
+                    <span>{copiedEmail ? '¡Correo Copiado!' : 'Copiar Correo Directo (bastian.mejias.c@mail.pucv.cl)'}</span>
                   </button>
                 </div>
               )}

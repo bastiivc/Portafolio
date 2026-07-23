@@ -3,13 +3,14 @@
 import React, { useState } from 'react';
 import { profileData } from '@/data/profile';
 import { GithubIcon, LinkedinIcon } from '@/components/icons';
-import { Mail, Send, CheckCircle2, MessageSquare, Sparkles, AlertCircle, ExternalLink, Copy, Check } from 'lucide-react';
+import { Mail, Send, CheckCircle2, MessageSquare, Sparkles, AlertCircle, ExternalLink, Copy, Check, Info } from 'lucide-react';
 
 export const ContactSection: React.FC = () => {
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [activationNotice, setActivationNotice] = useState<string | null>(null);
   const [copiedEmail, setCopiedEmail] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -18,11 +19,12 @@ export const ContactSection: React.FC = () => {
 
     setLoading(true);
     setErrorMsg(null);
+    setActivationNotice(null);
 
     const formToken = '6fccd57629dd513354bb7aca10999b24';
 
     try {
-      // Direct browser-side fetch to FormSubmit with activated token
+      // Try posting to FormSubmit activated token
       const res = await fetch(`https://formsubmit.co/ajax/${formToken}`, {
         method: 'POST',
         headers: {
@@ -40,11 +42,18 @@ export const ContactSection: React.FC = () => {
 
       const data = await res.json();
 
-      if (res.ok && (data.success === 'true' || data.success === true)) {
+      const isOk = res.ok && (data.success === 'true' || data.success === true);
+      const isActivationReq = data.message && data.message.includes('Activation');
+
+      if (isOk) {
         setSubmitted(true);
         setFormData({ name: '', email: '', subject: '', message: '' });
+      } else if (isActivationReq) {
+        setSubmitted(true);
+        setActivationNotice('FormSubmit solicitó autorizar este nuevo dominio. Por favor haz clic en "Activate Form" en tu correo bastian.mejias.c@mail.pucv.cl.');
+        setFormData({ name: '', email: '', subject: '', message: '' });
       } else {
-        // Fallback to server route /api/contact if client fetch returns error
+        // Fallback to server route
         const apiRes = await fetch('/api/contact', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -53,14 +62,17 @@ export const ContactSection: React.FC = () => {
         const apiData = await apiRes.json();
         if (apiRes.ok && apiData.success) {
           setSubmitted(true);
+          if (apiData.activationNeeded) {
+            setActivationNotice(apiData.message);
+          }
           setFormData({ name: '', email: '', subject: '', message: '' });
         } else {
-          throw new Error(data.message || apiData.error || 'Error al enviar el mensaje.');
+          throw new Error(data.message || apiData.error || 'No se pudo procesar el mensaje.');
         }
       }
     } catch (err: any) {
       console.error('Submit error:', err);
-      setErrorMsg('No se pudo enviar el mensaje automáticamente. Puedes hacer clic abajo para copiar el correo directamente.');
+      setErrorMsg('No se pudo enviar el mensaje automáticamente. Puedes copiar el correo directo abajo.');
     } finally {
       setLoading(false);
     }
@@ -98,12 +110,29 @@ export const ContactSection: React.FC = () => {
               <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
-              <h4 className="text-base font-bold text-white">¡Mensaje Enviado con Éxito!</h4>
-              <p className="text-xs text-slate-300">
-                Gracias por comunicarte con Bastián Mejías. Tu mensaje fue enviado a <strong>bastian.mejias.c@mail.pucv.cl</strong> y te responderé a la brevedad.
-              </p>
+              <h4 className="text-base font-bold text-white">
+                {activationNotice ? '¡Formulario Enviado!' : '¡Mensaje Enviado con Éxito!'}
+              </h4>
+              
+              {activationNotice ? (
+                <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-xs text-amber-300 space-y-1 text-left">
+                  <div className="flex items-center gap-1.5 font-semibold text-amber-400">
+                    <Info className="w-4 h-4 shrink-0" />
+                    <span>Activación de nuevo dominio:</span>
+                  </div>
+                  <p>{activationNotice}</p>
+                </div>
+              ) : (
+                <p className="text-xs text-slate-300">
+                  Gracias por comunicarte con Bastián Mejías. Tu mensaje fue enviado a <strong>bastian.mejias.c@mail.pucv.cl</strong> y te responderé a la brevedad.
+                </p>
+              )}
+
               <button
-                onClick={() => setSubmitted(false)}
+                onClick={() => {
+                  setSubmitted(false);
+                  setActivationNotice(null);
+                }}
                 className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-medium text-white transition-colors"
               >
                 Enviar otro mensaje
@@ -115,7 +144,7 @@ export const ContactSection: React.FC = () => {
                 <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300 space-y-2">
                   <div className="flex items-center gap-2 font-semibold text-rose-400">
                     <AlertCircle className="w-4 h-4 shrink-0" />
-                    <span>Error de comunicación</span>
+                    <span>Aviso de contacto</span>
                   </div>
                   <p>{errorMsg}</p>
                   <button

@@ -14,13 +14,17 @@ export async function POST(request: Request) {
     }
 
     const targetEmail = profileData.socials.email || 'bastian.mejias.c@mail.pucv.cl';
+    const origin = request.headers.get('origin') || request.headers.get('referer') || 'https://bastiivc.vercel.app';
 
-    // Submit via FormSubmit AJAX service
+    // Submit via FormSubmit AJAX service with proper Origin & Referer headers
     const response = await fetch(`https://formsubmit.co/ajax/${targetEmail}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'Origin': origin,
+        'Referer': origin,
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Portfolio-App'
       },
       body: JSON.stringify({
         name,
@@ -33,15 +37,28 @@ export async function POST(request: Request) {
 
     const data = await response.json();
 
-    if (response.ok || data.success === 'true' || data.success === true) {
-      return NextResponse.json({ success: true, message: 'Mensaje enviado correctamente.' });
-    } else {
-      throw new Error(data.message || 'Error al procesar el envío.');
+    // Check if form activation email was sent or if success
+    const isSuccess = response.ok && (data.success === 'true' || data.success === true);
+    const isActivationNeeded = data.message && data.message.includes('Activation');
+
+    if (isSuccess || isActivationNeeded) {
+      return NextResponse.json({
+        success: true,
+        activationNeeded: isActivationNeeded,
+        message: isActivationNeeded
+          ? 'FormSubmit te ha enviado un correo a bastian.mejias.c@mail.pucv.cl con el enlace "Activate Form". Haz clic una sola vez para activar los envíos futuros.'
+          : 'Mensaje enviado correctamente.'
+      });
     }
+
+    return NextResponse.json(
+      { success: false, error: data.message || 'Error al procesar el envío.' },
+      { status: 400 }
+    );
   } catch (error: any) {
     console.error('Contact API Error:', error.message);
     return NextResponse.json(
-      { success: false, error: 'No se pudo enviar el mensaje directamente. Por favor utiliza el enlace de correo directo.' },
+      { success: false, error: 'Error de servidor al procesar la solicitud.' },
       { status: 500 }
     );
   }

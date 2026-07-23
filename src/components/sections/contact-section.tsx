@@ -3,13 +3,14 @@
 import React, { useState } from 'react';
 import { profileData } from '@/data/profile';
 import { GithubIcon, LinkedinIcon } from '@/components/icons';
-import { Mail, Send, CheckCircle2, MessageSquare, Sparkles, AlertCircle, ExternalLink, Copy, Check } from 'lucide-react';
+import { Mail, Send, CheckCircle2, MessageSquare, Sparkles, AlertCircle, ExternalLink, Copy, Check, Info } from 'lucide-react';
 
 export const ContactSection: React.FC = () => {
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [activationInfo, setActivationInfo] = useState<string | null>(null);
   const [copiedEmail, setCopiedEmail] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -18,6 +19,7 @@ export const ContactSection: React.FC = () => {
 
     setLoading(true);
     setErrorMsg(null);
+    setActivationInfo(null);
 
     try {
       const res = await fetch('/api/contact', {
@@ -30,13 +32,16 @@ export const ContactSection: React.FC = () => {
 
       if (res.ok && data.success) {
         setSubmitted(true);
+        if (data.activationNeeded) {
+          setActivationInfo(data.message);
+        }
         setFormData({ name: '', email: '', subject: '', message: '' });
       } else {
-        throw new Error(data.error || 'No se pudo enviar el mensaje por la red.');
+        throw new Error(data.error || 'No se pudo procesar el formulario.');
       }
     } catch (err: any) {
       console.error('Submit error:', err);
-      setErrorMsg('No se pudo enviar el mensaje automáticamente. Puedes copiar el correo o usar tus redes sociales.');
+      setErrorMsg(err.message || 'No se pudo enviar el mensaje automáticamente. Puedes copiar el correo o usar tus redes sociales.');
     } finally {
       setLoading(false);
     }
@@ -74,12 +79,27 @@ export const ContactSection: React.FC = () => {
               <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
-              <h4 className="text-base font-bold text-white">¡Mensaje Enviado con Éxito!</h4>
-              <p className="text-xs text-slate-300">
-                Gracias por comunicarte con Bastián Mejías. Te responderé a la brevedad a tu correo electrónico.
-              </p>
+              <h4 className="text-base font-bold text-white">¡Mensaje Recibido!</h4>
+              
+              {activationInfo ? (
+                <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-xs text-amber-300 space-y-1 text-left">
+                  <div className="flex items-center gap-1.5 font-semibold text-amber-400">
+                    <Info className="w-4 h-4 shrink-0" />
+                    <span>Activación de Formulario Requerida:</span>
+                  </div>
+                  <p>{activationInfo}</p>
+                </div>
+              ) : (
+                <p className="text-xs text-slate-300">
+                  Gracias por comunicarte con Bastián Mejías. Te responderé a la brevedad a tu correo electrónico.
+                </p>
+              )}
+
               <button
-                onClick={() => setSubmitted(false)}
+                onClick={() => {
+                  setSubmitted(false);
+                  setActivationInfo(null);
+                }}
                 className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-medium text-white transition-colors"
               >
                 Enviar otro mensaje

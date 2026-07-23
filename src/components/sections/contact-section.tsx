@@ -3,13 +3,14 @@
 import React, { useState } from 'react';
 import { profileData } from '@/data/profile';
 import { GithubIcon, LinkedinIcon } from '@/components/icons';
-import { Mail, Send, CheckCircle2, MessageSquare, Sparkles, AlertCircle, ExternalLink } from 'lucide-react';
+import { Mail, Send, CheckCircle2, MessageSquare, Sparkles, AlertCircle, ExternalLink, Copy, Check } from 'lucide-react';
 
 export const ContactSection: React.FC = () => {
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [copiedEmail, setCopiedEmail] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,17 +32,20 @@ export const ContactSection: React.FC = () => {
         setSubmitted(true);
         setFormData({ name: '', email: '', subject: '', message: '' });
       } else {
-        throw new Error(data.error || 'No se pudo enviar el formulario.');
+        throw new Error(data.error || 'No se pudo enviar el mensaje por la red.');
       }
     } catch (err: any) {
       console.error('Submit error:', err);
-      // If endpoint fails, fallback to direct mailto action
-      const mailtoUrl = `mailto:${profileData.socials.email}?subject=${encodeURIComponent(formData.subject || 'Consulta Portafolio')}&body=${encodeURIComponent(`De: ${formData.name} (${formData.email})\n\n${formData.message}`)}`;
-      window.location.href = mailtoUrl;
-      setSubmitted(true);
+      setErrorMsg('No se pudo enviar el mensaje automáticamente. Puedes copiar el correo o usar tus redes sociales.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const copyEmailToClipboard = () => {
+    navigator.clipboard.writeText(profileData.socials.email);
+    setCopiedEmail(true);
+    setTimeout(() => setCopiedEmail(false), 2000);
   };
 
   return (
@@ -70,7 +74,7 @@ export const ContactSection: React.FC = () => {
               <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
-              <h4 className="text-base font-bold text-white">¡Mensaje Procesado con Éxito!</h4>
+              <h4 className="text-base font-bold text-white">¡Mensaje Enviado con Éxito!</h4>
               <p className="text-xs text-slate-300">
                 Gracias por comunicarte con Bastián Mejías. Te responderé a la brevedad a tu correo electrónico.
               </p>
@@ -84,9 +88,20 @@ export const ContactSection: React.FC = () => {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               {errorMsg && (
-                <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300 flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
-                  <span>{errorMsg}</span>
+                <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300 space-y-2">
+                  <div className="flex items-center gap-2 font-semibold text-rose-400">
+                    <AlertCircle className="w-4 h-4 shrink-0" />
+                    <span>Error al enviar mensaje</span>
+                  </div>
+                  <p>{errorMsg}</p>
+                  <button
+                    type="button"
+                    onClick={copyEmailToClipboard}
+                    className="px-3 py-1 rounded bg-rose-500/20 hover:bg-rose-500/30 text-white font-medium text-[11px] flex items-center gap-1.5 transition-colors"
+                  >
+                    {copiedEmail ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedEmail ? '¡Correo Copiado!' : 'Copiar Correo (bastian.mejias.c@mail.pucv.cl)'}</span>
+                  </button>
                 </div>
               )}
 
@@ -165,19 +180,20 @@ export const ContactSection: React.FC = () => {
             </h3>
 
             <div className="space-y-3 text-xs">
-              <a
-                href={`mailto:${profileData.socials.email}?subject=Contacto%20desde%20Portafolio`}
-                className="flex items-center gap-3 p-3 rounded-xl bg-slate-900/80 text-slate-200 border border-white/5 hover:border-sky-400/40 hover:text-sky-300 transition-colors group"
+              <button
+                type="button"
+                onClick={copyEmailToClipboard}
+                className="w-full text-left flex items-center gap-3 p-3 rounded-xl bg-slate-900/80 text-slate-200 border border-white/5 hover:border-sky-400/40 hover:text-sky-300 transition-colors group"
               >
                 <div className="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-400 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Mail className="w-4 h-4" />
                 </div>
                 <div className="truncate flex-1">
-                  <p className="text-[10px] text-slate-400">Email Directo (PUCV)</p>
+                  <p className="text-[10px] text-slate-400">Email Directo (Haz clic para copiar)</p>
                   <p className="font-semibold truncate">{profileData.socials.email}</p>
                 </div>
-                <ExternalLink className="w-3.5 h-3.5 text-slate-500 group-hover:text-sky-400" />
-              </a>
+                {copiedEmail ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-500 group-hover:text-sky-400" />}
+              </button>
 
               <a
                 href={profileData.socials.github}

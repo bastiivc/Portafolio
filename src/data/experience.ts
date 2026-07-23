@@ -3,34 +3,64 @@ import { ExperienceItem } from '@/types/portfolio';
 export const experienceData: ExperienceItem[] = [
   {
     id: "exp-1",
-    role: "Senior Fullstack Developer",
-    company: "Tech Innovation Lab / Freelance",
-    location: "Santiago, Chile (Remoto)",
-    startDate: "2023",
-    endDate: "Presente",
-    current: true,
-    description: "Liderazgo en el diseño y desarrollo de aplicaciones web de alto rendimiento orientadas a productos SaaS y plataformas interactivas.",
+    role: "Práctica Profesional — Infraestructura & TI",
+    company: "Watt’s S.A",
+    location: "Chile",
+    startDate: "Dic 2025",
+    endDate: "Feb 2026",
+    current: false,
+    description: "Gestión del ciclo de vida de activos de hardware y administración de infraestructura tecnológica corporativa de gran escala.",
     highlights: [
-      "Implementación de arquitecturas modernas utilizando Next.js App Router, TypeScript y Tailwind CSS.",
-      "Optimización del rendimiento web logrando puntuaciones de 95+ en Google Lighthouse (Core Web Vitals).",
-      "Integración de APIs de terceros, pasarelas de pago y autenticación segura con Supabase/NextAuth."
+      "Administración de usuarios y reglas de dominio en entornos corporativos con Windows Server (Active Directory), conectividad IPv4 y gestión de identidades en SAP.",
+      "Diseño e implementación de un procedimiento técnico de preparación masiva de equipos sin software de terceros, optimizando tiempos de producción y reduciendo vulnerabilidades críticas.",
+      "Modelado de bases de datos utilizando Oracle 10g y ERD Plus, junto con el levantamiento de flujos de procesos en Visio y ejecución de tareas avanzadas en PowerShell/CMD.",
+      "Atención de requerimientos y control de inventarios mediante herramientas ITSM y Excel asegurando una experiencia de usuario (UX) alineada con los estándares de la compañía."
     ],
-    techStack: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Node.js", "PostgreSQL", "Vercel"]
+    techStack: ["Windows Server", "Active Directory", "Oracle 10g", "SAP", "PowerShell", "ITSM", "Visio", "IPv4"]
   },
   {
     id: "exp-2",
-    role: "Frontend Developer",
-    company: "Digital Studio & Solutions",
+    role: "Reponedor de Productos",
+    company: "Fides Cygnus - Watt's",
     location: "Chile",
-    startDate: "2022",
-    endDate: "2023",
+    startDate: "Dic 2023",
+    endDate: "Feb 2024",
     current: false,
-    description: "Desarrollo de interfaces de usuario interactivas, responsivas y accesibles para clientes del sector retail y tecnológico.",
+    description: "Reposición de mercadería en importantes cadenas de supermercados, asegurando la correcta exhibición y disponibilidad de productos.",
     highlights: [
-      "Creación de bibliotecas de componentes UI reutilizables con animación mediante Framer Motion.",
-      "Migración de plataformas legadas a tecnologías modernas basadas en React y TypeScript.",
-      "Colaboración estrecha con equipos de diseño UI/UX en Figma."
+      "Gestión de stock en punto de venta y control de inventarios.",
+      "Atención y colaboración con supervisores y personal de logística en sala."
     ],
-    techStack: ["React", "TypeScript", "Tailwind CSS", "Framer Motion", "REST APIs", "Git"]
+    techStack: ["Gestión de Inventarios", "Logística", "Atención al Cliente"]
+  },
+  {
+    id: "exp-3",
+    role: "Ayudante de Peoneta",
+    company: "Evercrisp",
+    location: "Chile",
+    startDate: "Ene 2021",
+    endDate: "Feb 2021",
+    current: false,
+    description: "Participación en la logística de carga y descarga de camiones, entrega de mercancía y atención directa al cliente.",
+    highlights: [
+      "Cumplimiento eficiente de rutas de distribución y apoyo logístico.",
+      "Atención directa y cordial con clientes en ruta."
+    ],
+    techStack: ["Logística", "Distribución", "Trabajo en Equipo"]
+  },
+  {
+    id: "exp-4",
+    role: "Guía de Patrulla",
+    company: "Grupo Scout / Organización sin fines de lucro",
+    location: "Chile",
+    startDate: "Mar 2017",
+    endDate: "Jun 2019",
+    current: false,
+    description: "Liderazgo de equipo y desarrollo de actividades comunitarias y de recaudación de fondos.",
+    highlights: [
+      "Desarrollo de habilidades de liderazgo, sociabilidad y servicio al cliente.",
+      "Organización de ventas y eventos de empaque para financiamiento de proyectos scouts."
+    ],
+    techStack: ["Liderazgo", "Trabajo en Equipo", "Organización", "Atención al Cliente"]
   }
 ];

@@ -101,7 +101,7 @@ export const BioSection: React.FC<BioSectionProps> = () => {
           <Layers className="w-5 h-5 text-purple-400" />
           Stack Tecnológico
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {profileData.skills.map((skillGroup, idx) => (
             <div key={idx} className="p-5 rounded-xl glass-card space-y-3">
               <h3 className="text-sm font-semibold text-slate-200 tracking-wide">{skillGroup.category}</h3>

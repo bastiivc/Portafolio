@@ -10,7 +10,7 @@ export const CertificatesSection: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
   const [activeCertificate, setActiveCertificate] = useState<CertificateItem | null>(null);
 
-  const categories = ['Todos', 'Desarrollo', 'Cloud/DevOps'];
+  const categories = ['Todos', 'Desarrollo', 'Cloud/DevOps', 'Ciencia de Datos', 'Otro'];
 
   const filteredCertificates = certificatesData.filter(cert => {
     if (selectedCategory === 'Todos') return true;

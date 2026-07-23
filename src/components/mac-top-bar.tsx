@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Apple, Wifi, Sun, Moon, Sparkles, Terminal } from 'lucide-react';
+import { Wifi, Sun, Moon, Terminal } from 'lucide-react';
 import { profileData } from '@/data/profile';
 
 interface MacTopBarProps {
@@ -31,7 +31,6 @@ export const MacTopBar: React.FC<MacTopBarProps> = ({ theme, toggleTheme, active
       {/* Left Menu Items */}
       <div className="flex items-center space-x-4 font-medium">
         <div className="flex items-center space-x-1.5 cursor-pointer hover:opacity-80 transition-opacity">
-          <Apple className="w-3.5 h-3.5 fill-current text-sky-400" />
           <span className="font-semibold text-white tracking-tight">{profileData.name}</span>
         </div>
         

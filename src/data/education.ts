@@ -3,25 +3,26 @@ import { EducationItem } from '@/types/portfolio';
 export const educationData: EducationItem[] = [
   {
     id: "edu-1",
-    institution: "Universidad Tecnológica / Instituto Profesional",
-    degree: "Ingeniería en Informática / Ciencia de la Computación",
-    fieldOfStudy: "Desarrollo de Software y Arquitectura de Sistemas",
-    startDate: "2020",
-    endDate: "2024",
-    location: "Chile",
-    description: "Formación especializada en ingeniería de software, estructuras de datos, algoritmos, bases de datos relacionales y no relacionales, desarrollo web fullstack y metodologías ágiles.",
+    institution: "Pontificia Universidad Católica de Valparaíso (PUCV)",
+    degree: "Ingeniería en Informática",
+    fieldOfStudy: "8vo y Último Semestre — Alta Disponibilidad Laboral",
+    startDate: "2023",
+    endDate: "Actualidad",
+    location: "Valparaíso, Chile",
+    description: "Estudiante de 8vo semestre. Planificación estratégica que me permitió adelantar asignaturas y contar con disponibilidad inmediata para integrarme al mercado laboral a tiempo completo o parcial.",
     achievements: [
-      "Proyecto de título enfocado en arquitecturas basadas en microservicios y Next.js.",
-      "Participante activo en talleres de desarrollo colaborativo y hackathons."
+      "Cursos Relevantes: Bases de Datos, Programación Avanzada, Ingeniería de Requerimientos, Redes de Computadores, Estructura de Datos, Ingeniería de Software, Hardware y SO, Ciberseguridad, Ciencia de Redes.",
+      "Desarrollo de proyectos prácticos en modelado de datos, redes Cisco CCNA, administración de servidores e IA."
     ]
   },
   {
     id: "edu-2",
-    institution: "Cursos Especializados & Bootcamps",
-    degree: "Especialización Fullstack & Cloud Architecture",
-    fieldOfStudy: "Desarrollo Frontend Avanzado & Backend Serverless",
-    startDate: "2023",
-    endDate: "Presente",
-    description: "Capacitación continua en Next.js 14/15, Tailwind CSS, TypeScript avanzadas, patrones de diseño de software y despliegue continuo en Vercel & AWS."
+    institution: "Colegio Esperanza de Quilpué",
+    degree: "Enseñanza Básica y Media Completa",
+    fieldOfStudy: "Educación General Científico-Humanista",
+    startDate: "2010",
+    endDate: "2022",
+    location: "Quilpué, Chile",
+    description: "Formación de enseñanza básica y media completa con destacado desempeño académico y participación en actividades comunitarias."
   }
 ];

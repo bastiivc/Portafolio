@@ -2,24 +2,46 @@
 
 import React, { useState } from 'react';
 import { profileData } from '@/data/profile';
-import { GithubIcon, LinkedinIcon, TwitterIcon } from '@/components/icons';
-import { Mail, Send, MapPin, CheckCircle2, MessageSquare, Sparkles } from 'lucide-react';
+import { GithubIcon, LinkedinIcon } from '@/components/icons';
+import { Mail, Send, CheckCircle2, MessageSquare, Sparkles, AlertCircle, ExternalLink } from 'lucide-react';
 
 export const ContactSection: React.FC = () => {
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) return;
 
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    setErrorMsg(null);
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        setSubmitted(true);
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        throw new Error(data.error || 'No se pudo enviar el formulario.');
+      }
+    } catch (err: any) {
+      console.error('Submit error:', err);
+      // If endpoint fails, fallback to direct mailto action
+      const mailtoUrl = `mailto:${profileData.socials.email}?subject=${encodeURIComponent(formData.subject || 'Consulta Portafolio')}&body=${encodeURIComponent(`De: ${formData.name} (${formData.email})\n\n${formData.message}`)}`;
+      window.location.href = mailtoUrl;
       setSubmitted(true);
-      setFormData({ name: '', email: '', subject: '', message: '' });
-    }, 800);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -31,7 +53,7 @@ export const ContactSection: React.FC = () => {
           Ponte en Contacto
         </h2>
         <p className="text-sm text-slate-400 mt-1">
-          ¿Tienes un proyecto en mente, una consulta laboral o deseas colaborar? Escríbeme directamente.
+          ¿Tienes un proyecto en mente, una propuesta laboral o deseas colaborar? Escríbeme directamente.
         </p>
       </div>
 
@@ -48,9 +70,9 @@ export const ContactSection: React.FC = () => {
               <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
-              <h4 className="text-base font-bold text-white">¡Mensaje Enviado con Éxito!</h4>
+              <h4 className="text-base font-bold text-white">¡Mensaje Procesado con Éxito!</h4>
               <p className="text-xs text-slate-300">
-                Gracias por comunicarte. Te responderé a la brevedad posible a tu correo electrónico.
+                Gracias por comunicarte con Bastián Mejías. Te responderé a la brevedad a tu correo electrónico.
               </p>
               <button
                 onClick={() => setSubmitted(false)}
@@ -61,9 +83,16 @@ export const ContactSection: React.FC = () => {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
+              {errorMsg && (
+                <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+                  <span>{errorMsg}</span>
+                </div>
+              )}
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-slate-300">Tu Nombre</label>
+                  <label className="text-xs font-medium text-slate-300">Tu Nombre *</label>
                   <input
                     type="text"
                     required
@@ -74,7 +103,7 @@ export const ContactSection: React.FC = () => {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-slate-300">Tu Correo Electrónico</label>
+                  <label className="text-xs font-medium text-slate-300">Tu Correo Electrónico *</label>
                   <input
                     type="email"
                     required
@@ -98,7 +127,7 @@ export const ContactSection: React.FC = () => {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-300">Mensaje</label>
+                <label className="text-xs font-medium text-slate-300">Mensaje *</label>
                 <textarea
                   required
                   rows={4}
@@ -132,51 +161,54 @@ export const ContactSection: React.FC = () => {
           <div className="p-6 rounded-2xl glass-card border border-white/10 space-y-4">
             <h3 className="text-base font-bold text-white flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-amber-400" />
-              Canales Oficiales
+              Canales Oficiales Directos
             </h3>
 
             <div className="space-y-3 text-xs">
               <a
-                href={`mailto:${profileData.socials.email}`}
-                className="flex items-center gap-3 p-3 rounded-xl bg-slate-900/80 text-slate-200 border border-white/5 hover:border-sky-400/40 hover:text-sky-300 transition-colors"
+                href={`mailto:${profileData.socials.email}?subject=Contacto%20desde%20Portafolio`}
+                className="flex items-center gap-3 p-3 rounded-xl bg-slate-900/80 text-slate-200 border border-white/5 hover:border-sky-400/40 hover:text-sky-300 transition-colors group"
               >
-                <div className="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-400 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-400 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Mail className="w-4 h-4" />
                 </div>
-                <div className="truncate">
-                  <p className="text-[10px] text-slate-400">Email Directo</p>
-                  <p className="font-semibold">{profileData.socials.email}</p>
+                <div className="truncate flex-1">
+                  <p className="text-[10px] text-slate-400">Email Directo (PUCV)</p>
+                  <p className="font-semibold truncate">{profileData.socials.email}</p>
                 </div>
+                <ExternalLink className="w-3.5 h-3.5 text-slate-500 group-hover:text-sky-400" />
               </a>
 
               <a
                 href={profileData.socials.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3 rounded-xl bg-slate-900/80 text-slate-200 border border-white/5 hover:border-purple-400/40 hover:text-purple-300 transition-colors"
+                className="flex items-center gap-3 p-3 rounded-xl bg-slate-900/80 text-slate-200 border border-white/5 hover:border-purple-400/40 hover:text-purple-300 transition-colors group"
               >
-                <div className="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <GithubIcon className="w-4 h-4" />
                 </div>
-                <div>
-                  <p className="text-[10px] text-slate-400">GitHub Profile</p>
+                <div className="flex-1">
+                  <p className="text-[10px] text-slate-400">Perfil de GitHub</p>
                   <p className="font-semibold">@{profileData.githubUsername}</p>
                 </div>
+                <ExternalLink className="w-3.5 h-3.5 text-slate-500 group-hover:text-purple-400" />
               </a>
 
               <a
                 href={profileData.socials.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3 rounded-xl bg-slate-900/80 text-slate-200 border border-white/5 hover:border-blue-400/40 hover:text-blue-300 transition-colors"
+                className="flex items-center gap-3 p-3 rounded-xl bg-slate-900/80 text-slate-200 border border-white/5 hover:border-blue-400/40 hover:text-blue-300 transition-colors group"
               >
-                <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <LinkedinIcon className="w-4 h-4" />
                 </div>
-                <div>
-                  <p className="text-[10px] text-slate-400">LinkedIn</p>
-                  <p className="font-semibold">{profileData.name}</p>
+                <div className="flex-1">
+                  <p className="text-[10px] text-slate-400">LinkedIn Oficial</p>
+                  <p className="font-semibold">Bastián Mejías Cornejo</p>
                 </div>
+                <ExternalLink className="w-3.5 h-3.5 text-slate-500 group-hover:text-blue-400" />
               </a>
             </div>
           </div>
@@ -184,10 +216,10 @@ export const ContactSection: React.FC = () => {
           <div className="p-5 rounded-2xl glass-card border border-white/10 space-y-2 text-xs text-slate-300">
             <div className="flex items-center gap-2 text-emerald-400 font-semibold">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-              Estado de Disponibilidad
+              Disponibilidad Laboral
             </div>
             <p className="text-slate-400 text-[11px] leading-relaxed">
-              Abierto a oportunidades de trabajo remoto, roles Fullstack / Frontend con Next.js & React, y desarrollo de aplicaciones a medida.
+              Disponibilidad inmediata para inserción en mercado laboral a tiempo completo o parcial.
             </p>
           </div>
         </div>

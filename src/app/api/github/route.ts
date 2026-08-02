@@ -1,13 +1,31 @@
 import { NextResponse } from 'next/server';
 import { profileData } from '@/data/profile';
 
-export const revalidate = 60; // Revalidate every 60 seconds
+export const revalidate = 60;
 
 export async function GET() {
   const username = process.env.NEXT_PUBLIC_GITHUB_USERNAME || profileData.githubUsername || 'bastiivc';
 
-  // List of extra organization or team repositories to include
+
   const extraReposList = ['Mx4-2V/intervee'];
+
+  const collaborativeRepos = [
+    {
+      id: 99887766,
+      name: "eye-tracking-analysis",
+      full_name: "DiegoRNR/eye-tracking-analysis",
+      description: "Análisis y modelado de datos de seguimiento ocular (Eye-Tracking Scanpaths) desarrollado en R y Python.",
+      html_url: "https://github.com/DiegoRNR/eye-tracking-analysis",
+      homepage: null,
+      stargazers_count: 0,
+      forks_count: 0,
+      language: "R",
+      topics: ["eye-tracking", "r", "python", "data-analysis", "scanpath-networks"],
+      updated_at: new Date().toISOString(),
+      created_at: "2026-08-01T00:00:00Z",
+      fork: false
+    }
+  ];
 
   try {
     const res = await fetch(`https://api.github.com/users/${username}/repos?sort=pushed&direction=desc&per_page=100`, {
@@ -19,13 +37,11 @@ export async function GET() {
       next: { revalidate: 60 }
     });
 
-    if (!res.ok) {
-      throw new Error(`GitHub API error: ${res.status}`);
+    let repos: any[] = [];
+    if (res.ok) {
+      repos = await res.json();
     }
 
-    let repos = await res.json();
-
-    // Check if MARC-IA-Project is in repos list, if not fetch it specifically
     const hasMarcIa = repos.some((r: any) => r.name.toLowerCase().includes('marc-ia') || r.name.toLowerCase().includes('marcia'));
     if (!hasMarcIa) {
       try {
@@ -46,7 +62,6 @@ export async function GET() {
       }
     }
 
-    // Fetch extra organization repositories (like Mx4-2V/intervee)
     for (const extraRepoPath of extraReposList) {
       const alreadyIncluded = repos.some((r: any) => r.full_name?.toLowerCase() === extraRepoPath.toLowerCase() || r.name?.toLowerCase() === extraRepoPath.split('/')[1]?.toLowerCase());
       if (!alreadyIncluded) {
@@ -69,18 +84,41 @@ export async function GET() {
       }
     }
 
-    // Map to simplified structure
+    for (const collabRepo of collaborativeRepos) {
+      const alreadyIncluded = repos.some((r: any) => r.name?.toLowerCase() === collabRepo.name.toLowerCase() || r.full_name?.toLowerCase() === collabRepo.full_name.toLowerCase());
+      if (!alreadyIncluded) {
+        try {
+          const collabRes = await fetch(`https://api.github.com/repos/${collabRepo.full_name}`, {
+            headers: {
+              'Accept': 'application/vnd.github.v3+json',
+              'User-Agent': 'Portfolio-App',
+              ...(process.env.GITHUB_TOKEN ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` } : {})
+            },
+            next: { revalidate: 60 }
+          });
+          if (collabRes.ok) {
+            const fetchedCollab = await collabRes.json();
+            repos.unshift(fetchedCollab);
+          } else {
+            repos.unshift(collabRepo);
+          }
+        } catch (e) {
+          repos.unshift(collabRepo);
+        }
+      }
+    }
+
     const formattedRepos = repos.map((repo: any) => ({
       id: repo.id,
       name: repo.name,
       full_name: repo.full_name,
-      description: repo.description || (repo.name.includes('MARC-IA') ? 'Asistente virtual usando RAG para orientación institucional.' : (repo.name === 'intervee' ? 'Desarrollo web 3D interactivo con Three.js' : null)),
+      description: repo.description || (repo.name.includes('MARC-IA') ? 'Asistente virtual usando RAG para orientación institucional.' : (repo.name === 'intervee' ? 'Desarrollo web 3D interactivo con Three.js' : (repo.name === 'eye-tracking-analysis' ? 'Análisis y modelado de datos de seguimiento ocular en R y Python.' : null))),
       html_url: repo.html_url,
       homepage: repo.homepage,
       stargazers_count: repo.stargazers_count || 0,
       forks_count: repo.forks_count || 0,
-      language: repo.language || (repo.name.includes('MARC-IA') ? 'Python' : 'TypeScript'),
-      topics: repo.topics && repo.topics.length > 0 ? repo.topics : (repo.name.includes('MARC-IA') ? ['rag', 'ia', 'python', 'asistente-virtual'] : (repo.name === 'intervee' ? ['threejs', 'typescript', '3d-web'] : [])),
+      language: repo.language || (repo.name.includes('MARC-IA') ? 'Python' : (repo.name === 'eye-tracking-analysis' ? 'R' : 'TypeScript')),
+      topics: repo.topics && repo.topics.length > 0 ? repo.topics : (repo.name.includes('MARC-IA') ? ['rag', 'ia', 'python', 'asistente-virtual'] : (repo.name === 'intervee' ? ['threejs', 'typescript', '3d-web'] : (repo.name === 'eye-tracking-analysis' ? ['eye-tracking', 'r', 'python', 'scanpath'] : []))),
       updated_at: repo.updated_at,
       created_at: repo.created_at,
       fork: repo.fork
@@ -93,13 +131,27 @@ export async function GET() {
     });
   } catch (error: any) {
     console.error('Error fetching GitHub repos:', error.message);
-    
-    // Fallback response with real repos including MARC-IA-Project and intervee
+
     return NextResponse.json({
       success: false,
       isFallback: true,
       username,
       repos: [
+        {
+          id: 99887766,
+          name: "eye-tracking-analysis",
+          full_name: "DiegoRNR/eye-tracking-analysis",
+          description: "Análisis y modelado de datos de seguimiento ocular (Eye-Tracking Scanpaths) desarrollado en R y Python.",
+          html_url: "https://github.com/DiegoRNR/eye-tracking-analysis",
+          homepage: null,
+          stargazers_count: 0,
+          forks_count: 0,
+          language: "R",
+          topics: ["eye-tracking", "r", "python", "data-analysis", "scanpath-networks"],
+          updated_at: new Date().toISOString(),
+          created_at: "2026-08-01T00:00:00Z",
+          fork: false
+        },
         {
           id: 1208021191,
           name: "intervee",

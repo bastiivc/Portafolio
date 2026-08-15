@@ -13,12 +13,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Bastián VC | Fullstack Developer & Software Engineer Portfolio",
+  title: "Portafolio Bastian",
   description: "Portafolio profesional interactivo de Bastián VC desarrollado con Next.js 15, TypeScript, Tailwind CSS y Framer Motion. Expone proyectos de GitHub, experiencia laboral y certificaciones.",
   keywords: ["Portafolio", "Fullstack Developer", "Next.js", "React", "TypeScript", "Tailwind CSS", "GitHub API", "Apple UI", "macOS style"],
   authors: [{ name: "Bastián VC" }],
   openGraph: {
-    title: "Bastián VC | Portafolio Fullstack Developer",
+    title: "Portafolio Bastian",
     description: "Explora mis proyectos de GitHub, experiencia laboral, educación y certificados en un entorno web estilo Apple macOS.",
     type: "website",
     locale: "es_CL"

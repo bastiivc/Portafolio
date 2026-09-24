@@ -20,20 +20,20 @@ export const experienceData: ExperienceItem[] = [
   },
   {
     id: "exp-1",
-    role: "Práctica Profesional — Desarrollo & Infraestructura TI",
+    role: "Práctica Profesional — Infraestructura & TI",
     company: "Watt’s S.A",
-    location: "San Bernardo, Región Metropolitana (Híbrido)",
-    startDate: "Dic 2024",
-    endDate: "Mar 2025",
+    location: "Chile",
+    startDate: "Dic 2025",
+    endDate: "Feb 2026",
     current: false,
-    description: "Desarrollo de un sistema interno para el control y asignación de activos informáticos de la empresa Watt's S.A. y administración de infraestructura corporativa.",
+    description: "Gestión del ciclo de vida de activos de hardware y administración de infraestructura tecnológica corporativa de gran escala.",
     highlights: [
-      "Desarrollo de plataforma web interna para control, seguimiento y asignación de activos informáticos corporativos utilizando Next.js, React.js y PostgreSQL bajo metodologías ágiles.",
       "Administración de usuarios y reglas de dominio en entornos corporativos con Windows Server (Active Directory), conectividad IPv4 y gestión de identidades en SAP.",
       "Diseño e implementación de un procedimiento técnico de preparación masiva de equipos sin software de terceros, optimizando tiempos de producción y reduciendo vulnerabilidades críticas.",
-      "Modelado de bases de datos utilizando Oracle 10g y ERD Plus, junto con el levantamiento de flujos de procesos en Visio y ejecución de tareas avanzadas en PowerShell/CMD."
+      "Modelado de bases de datos utilizando Oracle 10g y ERD Plus, junto con el levantamiento de flujos de procesos en Visio y ejecución de tareas avanzadas en PowerShell/CMD.",
+      "Atención de requerimientos y control de inventarios mediante herramientas ITSM y Excel asegurando una experiencia de usuario (UX) alineada con los estándares de la compañía."
     ],
-    techStack: ["Next.js", "React.js", "PostgreSQL", "Windows Server", "Active Directory", "Oracle 10g", "SAP", "PowerShell", "Metodologías Ágiles"]
+    techStack: ["Windows Server", "Active Directory", "Oracle 10g", "SAP", "PowerShell", "ITSM", "Visio", "IPv4"]
   },
   {
     id: "exp-2",

@@ -14,7 +14,7 @@ export const profileData: ProfileData = {
   githubUsername: "bastiivc",
   socials: {
     github: "https://github.com/bastiivc",
-    linkedin: "https://www.linkedin.com/in/basti%C3%A1n-mej%C3%ADas-cornejo-236170312/",
+    linkedin: "https://www.linkedin.com/in/bastian-mejias",
     email: "bastian.mejias.c@mail.pucv.cl",
     twitter: "https://x.com/bastiivc"
   },

@@ -5,11 +5,11 @@ export const educationData: EducationItem[] = [
     id: "edu-1",
     institution: "Pontificia Universidad Católica de Valparaíso (PUCV)",
     degree: "Ingeniería en Informática",
-    fieldOfStudy: "8vo y Último Semestre — Alta Disponibilidad Laboral",
+    fieldOfStudy: "8vo Semestre — PUCV (Egreso Diciembre 2026)",
     startDate: "2023",
-    endDate: "Actualidad",
+    endDate: "2026",
     location: "Valparaíso, Chile",
-    description: "Estudiante de 8vo semestre. Planificación estratégica que me permitió adelantar asignaturas y contar con disponibilidad inmediata para integrarme al mercado laboral a tiempo completo o parcial.",
+    description: "Estudiante de Ingeniería en Informática. Planificación estratégica y sólida formación técnica que me permite adelantar asignaturas y contar con alta disponibilidad horaria para insertarme al mercado laboral y asumir desafíos profesionales.",
     achievements: [
       "Cursos Relevantes: Bases de Datos, Programación Avanzada, Ingeniería de Requerimientos, Redes de Computadores, Estructura de Datos, Ingeniería de Software, Hardware y SO, Ciberseguridad, Ciencia de Redes.",
       "Desarrollo de proyectos prácticos en modelado de datos, redes Cisco CCNA, administración de servidores e IA."

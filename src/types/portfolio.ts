@@ -42,7 +42,7 @@ export interface CertificateItem {
   credentialUrl?: string;
   skills: string[];
   image?: string;
-  category: 'Desarrollo' | 'Cloud/DevOps' | 'Diseño' | 'Ciencia de Datos' | 'Otro';
+  category: 'Desarrollo' | 'Cloud/DevOps' | 'Diseño' | 'Ciencia de Datos' | 'Ciberseguridad' | 'Otro';
 }
 
 export interface ExperienceItem {
@@ -87,4 +87,5 @@ export interface GitHubRepo {
   updated_at: string;
   created_at: string;
   fork: boolean;
+  isLiveProduction?: boolean;
 }

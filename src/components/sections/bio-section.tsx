@@ -135,6 +135,11 @@ export const BioSection: React.FC<BioSectionProps> = () => {
                   <p className="text-sm text-sky-400 font-medium">{item.company}</p>
                 </div>
                 <div className="flex items-center gap-2">
+                  {item.current && (
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                      Actual
+                    </span>
+                  )}
                   <span className="text-xs font-mono px-2.5 py-1 rounded-md bg-slate-900 text-slate-300 border border-white/10">
                     {item.startDate} — {item.endDate}
                   </span>

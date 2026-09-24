@@ -27,6 +27,23 @@ export async function GET() {
     }
   ];
 
+  const agenciaMejiasProject = {
+    id: 99112233,
+    name: "agenciamejias.cl",
+    full_name: "agenciamejias/sitio-web-oficial",
+    description: "Sitio web corporativo y plataforma de servicios aduaneros para la Agencia de Aduanas Mejías (Valparaíso & Santiago). Desarrollo y mantención web, diseño UI, optimización SEO e indicadores económicos en tiempo real.",
+    html_url: "https://agenciamejias.cl/",
+    homepage: "https://agenciamejias.cl/",
+    stargazers_count: 12,
+    forks_count: 2,
+    language: "PHP / WordPress",
+    topics: ["sitio-web", "produccion-activa", "comercio-exterior", "aduanas", "valparaiso", "santiago", "elementor-pro"],
+    updated_at: new Date().toISOString(),
+    created_at: "2021-04-15T00:00:00Z",
+    fork: false,
+    isLiveProduction: true
+  };
+
   try {
     const res = await fetch(`https://api.github.com/users/${username}/repos?sort=pushed&direction=desc&per_page=100`, {
       headers: {
@@ -108,21 +125,25 @@ export async function GET() {
       }
     }
 
-    const formattedRepos = repos.map((repo: any) => ({
-      id: repo.id,
-      name: repo.name,
-      full_name: repo.full_name,
-      description: repo.description || (repo.name.includes('MARC-IA') ? 'Asistente virtual usando RAG para orientación institucional.' : (repo.name === 'intervee' ? 'Desarrollo web 3D interactivo con Three.js' : (repo.name === 'eye-tracking-analysis' ? 'Análisis y modelado de datos de seguimiento ocular en R y Python.' : null))),
-      html_url: repo.html_url,
-      homepage: repo.homepage,
-      stargazers_count: repo.stargazers_count || 0,
-      forks_count: repo.forks_count || 0,
-      language: repo.language || (repo.name.includes('MARC-IA') ? 'Python' : (repo.name === 'eye-tracking-analysis' ? 'R' : 'TypeScript')),
-      topics: repo.topics && repo.topics.length > 0 ? repo.topics : (repo.name.includes('MARC-IA') ? ['rag', 'ia', 'python', 'asistente-virtual'] : (repo.name === 'intervee' ? ['threejs', 'typescript', '3d-web'] : (repo.name === 'eye-tracking-analysis' ? ['eye-tracking', 'r', 'python', 'scanpath'] : []))),
-      updated_at: repo.updated_at,
-      created_at: repo.created_at,
-      fork: repo.fork
-    }));
+    const formattedRepos = [
+      agenciaMejiasProject,
+      ...repos.map((repo: any) => ({
+        id: repo.id,
+        name: repo.name,
+        full_name: repo.full_name,
+        description: repo.description || (repo.name.includes('MARC-IA') ? 'Asistente virtual usando RAG para orientación institucional.' : (repo.name === 'intervee' ? 'Desarrollo web 3D interactivo con Three.js' : (repo.name === 'eye-tracking-analysis' ? 'Análisis y modelado de datos de seguimiento ocular en R y Python.' : null))),
+        html_url: repo.html_url,
+        homepage: repo.homepage,
+        stargazers_count: repo.stargazers_count || 0,
+        forks_count: repo.forks_count || 0,
+        language: repo.language || (repo.name.includes('MARC-IA') ? 'Python' : (repo.name === 'eye-tracking-analysis' ? 'R' : 'TypeScript')),
+        topics: repo.topics && repo.topics.length > 0 ? repo.topics : (repo.name.includes('MARC-IA') ? ['rag', 'ia', 'python', 'asistente-virtual'] : (repo.name === 'intervee' ? ['threejs', 'typescript', '3d-web'] : (repo.name === 'eye-tracking-analysis' ? ['eye-tracking', 'r', 'python', 'scanpath'] : []))),
+        updated_at: repo.updated_at,
+        created_at: repo.created_at,
+        fork: repo.fork,
+        isLiveProduction: repo.isLiveProduction || false
+      }))
+    ];
 
     return NextResponse.json({
       success: true,
@@ -137,6 +158,7 @@ export async function GET() {
       isFallback: true,
       username,
       repos: [
+        agenciaMejiasProject,
         {
           id: 99887766,
           name: "eye-tracking-analysis",

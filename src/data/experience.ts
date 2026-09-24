@@ -2,21 +2,38 @@ import { ExperienceItem } from '@/types/portfolio';
 
 export const experienceData: ExperienceItem[] = [
   {
-    id: "exp-1",
-    role: "Práctica Profesional — Infraestructura & TI",
-    company: "Watt’s S.A",
-    location: "Chile",
-    startDate: "Dic 2025",
-    endDate: "Feb 2026",
-    current: false,
-    description: "Gestión del ciclo de vida de activos de hardware y administración de infraestructura tecnológica corporativa de gran escala.",
+    id: "exp-agencia-mejias",
+    role: "Desarrollador Web & Consultor TI",
+    company: "Agencia de Aduanas Mejías",
+    location: "Valparaíso / Santiago, Chile",
+    startDate: "Abr 2021",
+    endDate: "Actualidad",
+    current: true,
+    description: "Desarrollo, modernización continua y mantención de la plataforma web oficial (agenciamejias.cl), junto con el soporte tecnológico para operaciones de comercio exterior.",
     highlights: [
+      "Diseño y desarrollo del sitio web corporativo oficial para casa matriz en Valparaíso y sucursal en Santiago.",
+      "Integración de módulos dinámicos de consulta y despliegue de indicadores económicos (UF, UTM, Dólar Aduanero, Euro).",
+      "Optimización de arquitectura de información para servicios de importación, exportación, regímenes especiales y tramitación aduanera.",
+      "Mejora continua en posicionamiento SEO, rendimiento técnico, diseño responsivo y canales de contacto digital."
+    ],
+    techStack: ["WordPress", "Elementor Pro", "PHP", "JavaScript", "CSS3", "SEO", "Soporte TI"]
+  },
+  {
+    id: "exp-1",
+    role: "Práctica Profesional — Desarrollo & Infraestructura TI",
+    company: "Watt’s S.A",
+    location: "San Bernardo, Región Metropolitana (Híbrido)",
+    startDate: "Dic 2024",
+    endDate: "Mar 2025",
+    current: false,
+    description: "Desarrollo de un sistema interno para el control y asignación de activos informáticos de la empresa Watt's S.A. y administración de infraestructura corporativa.",
+    highlights: [
+      "Desarrollo de plataforma web interna para control, seguimiento y asignación de activos informáticos corporativos utilizando Next.js, React.js y PostgreSQL bajo metodologías ágiles.",
       "Administración de usuarios y reglas de dominio en entornos corporativos con Windows Server (Active Directory), conectividad IPv4 y gestión de identidades en SAP.",
       "Diseño e implementación de un procedimiento técnico de preparación masiva de equipos sin software de terceros, optimizando tiempos de producción y reduciendo vulnerabilidades críticas.",
-      "Modelado de bases de datos utilizando Oracle 10g y ERD Plus, junto con el levantamiento de flujos de procesos en Visio y ejecución de tareas avanzadas en PowerShell/CMD.",
-      "Atención de requerimientos y control de inventarios mediante herramientas ITSM y Excel asegurando una experiencia de usuario (UX) alineada con los estándares de la compañía."
+      "Modelado de bases de datos utilizando Oracle 10g y ERD Plus, junto con el levantamiento de flujos de procesos en Visio y ejecución de tareas avanzadas en PowerShell/CMD."
     ],
-    techStack: ["Windows Server", "Active Directory", "Oracle 10g", "SAP", "PowerShell", "ITSM", "Visio", "IPv4"]
+    techStack: ["Next.js", "React.js", "PostgreSQL", "Windows Server", "Active Directory", "Oracle 10g", "SAP", "PowerShell", "Metodologías Ágiles"]
   },
   {
     id: "exp-2",

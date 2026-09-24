@@ -26,8 +26,8 @@ export const certificatesData: CertificateItem[] = [
     title: "Gen AI Avanzado",
     issuer: "TIDWIT / Amazon Web Services",
     issueDate: "Sep 2026",
-    credentialId: "TIDWIT-AWS-GENAI-ADV",
-    credentialUrl: "https://aws-chile.ontidwit.com/",
+    credentialId: "2bb0c261-9782-43da-8a26-50b0cdc4a5fc",
+    credentialUrl: "https://aws-chile.ontidwit.com/badge?id=2bb0c261-9782-43da-8a26-50b0cdc4a5fc",
     skills: ["IA Generativa", "LLMs", "Prompt Engineering", "Fine-Tuning", "Modelos del Lenguaje"],
     category: "Desarrollo"
   },
@@ -67,7 +67,6 @@ export const certificatesData: CertificateItem[] = [
     issuer: "Santander Open Academy / Google",
     issueDate: "Sep 2025",
     credentialId: "OA-2025-0923001752745",
-    credentialUrl: "https://www.santanderopenacademy.com/",
     skills: ["Inteligencia Artificial", "Productividad", "Herramientas de Google", "Ingeniería de Prompts"],
     category: "Ciencia de Datos"
   },
@@ -77,7 +76,6 @@ export const certificatesData: CertificateItem[] = [
     issuer: "Santander Open Academy",
     issueDate: "Sep 2025",
     credentialId: "OA-2025-0923001752744",
-    credentialUrl: "https://www.santanderopenacademy.com/",
     skills: ["Ciencia de Datos", "Análisis de Datos", "Python", "Estadística Descriptiva"],
     category: "Ciencia de Datos"
   },
@@ -97,7 +95,6 @@ export const certificatesData: CertificateItem[] = [
     issuer: "Santander Open Academy",
     issueDate: "Jul 2025",
     credentialId: "OA-2025-0731001514963",
-    credentialUrl: "https://www.santanderopenacademy.com/",
     skills: ["Cursor AI", "Python", "Desarrollo Asistido por IA", "Refactorización", "Optimización"],
     category: "Desarrollo"
   },
@@ -107,7 +104,6 @@ export const certificatesData: CertificateItem[] = [
     issuer: "Santander Open Academy",
     issueDate: "Jul 2025",
     credentialId: "OA-2025-0731001514251",
-    credentialUrl: "https://www.santanderopenacademy.com/",
     skills: ["IA Generativa", "LLMs", "Modelos de Lenguaje", "Automatización de Tareas"],
     category: "Desarrollo"
   },
@@ -117,7 +113,6 @@ export const certificatesData: CertificateItem[] = [
     issuer: "Santander Open Academy",
     issueDate: "Jul 2025",
     credentialId: "OA-2025-0731001514252",
-    credentialUrl: "https://www.santanderopenacademy.com/",
     skills: ["Microsoft Excel", "Tablas Dinámicas", "Análisis de Datos", "Funciones y Fórmulas"],
     category: "Otro"
   },
@@ -126,8 +121,8 @@ export const certificatesData: CertificateItem[] = [
     title: "CCNA: Introduction to Networks",
     issuer: "Cisco Networking Academy",
     issueDate: "Dic 2024",
-    credentialId: "CISCO-CCNA-ITN-2024",
-    credentialUrl: "https://www.netacad.com/",
+    credentialId: "375b3b35-ec46-4568-8096-b54a4b7b25b7",
+    credentialUrl: "https://www.credly.com/badges/375b3b35-ec46-4568-8096-b54a4b7b25b7/linked_in_profile",
     skills: ["Networking", "Cisco CCNA", "IPv4/IPv6", "Subnetting", "Switching & Routing"],
     category: "Cloud/DevOps"
   }

@@ -6,7 +6,7 @@ export const experienceData: ExperienceItem[] = [
     role: "Desarrollador Web & Consultor TI",
     company: "Agencia de Aduanas Mejías",
     location: "Valparaíso / Santiago, Chile",
-    startDate: "Abr 2021",
+    startDate: "Jul 2026",
     endDate: "Actualidad",
     current: true,
     description: "Desarrollo, modernización continua y mantención de la plataforma web oficial (agenciamejias.cl), junto con el soporte tecnológico para operaciones de comercio exterior.",

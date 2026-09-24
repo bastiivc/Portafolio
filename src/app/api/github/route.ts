@@ -39,7 +39,7 @@ export async function GET() {
     language: "PHP / WordPress",
     topics: ["sitio-web", "produccion-activa", "comercio-exterior", "aduanas", "valparaiso", "santiago", "elementor-pro"],
     updated_at: new Date().toISOString(),
-    created_at: "2021-04-15T00:00:00Z",
+    created_at: "2026-07-01T00:00:00Z",
     fork: false,
     isLiveProduction: true
   };

@@ -13,13 +13,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Portafolio Bastian",
-  description: "Portafolio profesional interactivo de Bastián VC desarrollado con Next.js 15, TypeScript, Tailwind CSS y Framer Motion. Expone proyectos de GitHub, experiencia laboral y certificaciones.",
-  keywords: ["Portafolio", "Fullstack Developer", "Next.js", "React", "TypeScript", "Tailwind CSS", "GitHub API", "Apple UI", "macOS style"],
+  title: "Bastián Mejías — Desarrollo web & IA",
+  description: "Ideas en código. Soluciones reales. Proyectos de desarrollo web, inteligencia artificial y experiencia en infraestructura TI de Bastián Mejías, estudiante de Ingeniería en Informática PUCV.",
+  keywords: ["Bastián Mejías", "Portafolio", "Desarrollo web", "Inteligencia artificial", "Next.js", "React", "TypeScript", "Chile"],
   authors: [{ name: "Bastián VC" }],
   openGraph: {
-    title: "Portafolio Bastian",
-    description: "Explora mis proyectos de GitHub, experiencia laboral, educación y certificados en un entorno web estilo Apple macOS.",
+    title: "Bastián Mejías — Desarrollo web & IA",
+    description: "Proyectos, experiencia y aprendizaje. Desarrollo web e inteligencia artificial desde Valparaíso, Chile.",
     type: "website",
     locale: "es_CL"
   }
@@ -35,7 +35,7 @@ export default function RootLayout({
       lang="es"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
-      <body className="min-h-full flex flex-col bg-[#090d16] text-slate-100 selection:bg-sky-500 selection:text-white">
+      <body className="min-h-full">
         {children}
       </body>
     </html>

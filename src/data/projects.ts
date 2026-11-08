@@ -9,7 +9,6 @@ export const featuredProjectsData: FeaturedProject[] = [
     technologies: ["WordPress", "Elementor Pro", "PHP", "JavaScript", "CSS3", "SEO", "Responsive Design"],
     stars: 14,
     forks: 3,
-    githubUrl: "https://github.com/bastiivc",
     demoUrl: "https://agenciamejias.cl/",
     featured: true,
     category: "Producción Web"
@@ -28,15 +27,15 @@ export const featuredProjectsData: FeaturedProject[] = [
   },
   {
     id: "proj-1",
-    title: "Apple Glass OS Portfolio",
-    description: "Portafolio interactivo fullstack inspirado en la estética glassmorfista de macOS y Apple Vision, construido con Next.js y Tailwind CSS.",
-    longDescription: "Un sistema de portafolio ultra fluido con soporte de ventanas interactivas, modo oscuro/claro, consulta en tiempo real de la API de GitHub, y arquitectura de contenido modular fácil de mantener.",
+    title: "Mi espacio en la web",
+    description: "Diseño y desarrollo de este portafolio: una experiencia visual que conecta proyectos, trayectoria y aprendizaje.",
+    longDescription: "El desafío: presentar proyectos y experiencia sin convertir la navegación en un currículum extenso. Mi aporte: diseño adaptable con desplazamiento natural, identidad oscura con detalles de terminal, catálogo de GitHub y credenciales organizadas por categoría.",
     technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "GitHub API"],
     stars: 18,
     forks: 5,
     githubUrl: "https://github.com/bastiivc/Portafolio",
     demoUrl: "https://bastiivc.vercel.app",
     featured: true,
-    category: "Fullstack"
+    category: "Diseño & Desarrollo"
   }
 ];

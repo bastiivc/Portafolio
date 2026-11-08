@@ -70,7 +70,7 @@ export const ContactSection: React.FC = () => {
           throw new Error(data.message || apiData.error || 'No se pudo procesar el mensaje.');
         }
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Submit error:', err);
       setErrorMsg('No se pudo enviar el mensaje automáticamente. Puedes copiar el correo directo abajo.');
     } finally {
@@ -78,10 +78,14 @@ export const ContactSection: React.FC = () => {
     }
   };
 
-  const copyEmailToClipboard = () => {
-    navigator.clipboard.writeText(profileData.socials.email);
-    setCopiedEmail(true);
-    setTimeout(() => setCopiedEmail(false), 2000);
+  const copyEmailToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(profileData.socials.email);
+      setCopiedEmail(true);
+      setTimeout(() => setCopiedEmail(false), 2000);
+    } catch {
+      setErrorMsg('No se pudo copiar el correo. Puedes seleccionarlo o usar el enlace de contacto.');
+    }
   };
 
   return (
@@ -160,8 +164,10 @@ export const ContactSection: React.FC = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-slate-300">Tu Nombre *</label>
+                  <label htmlFor="contact-name" className="text-xs font-medium text-slate-300">Tu Nombre *</label>
                   <input
+                    id="contact-name"
+                    autoComplete="name"
                     type="text"
                     required
                     placeholder="Ej. María González"
@@ -171,8 +177,10 @@ export const ContactSection: React.FC = () => {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-slate-300">Tu Correo Electrónico *</label>
+                  <label htmlFor="contact-email" className="text-xs font-medium text-slate-300">Tu Correo Electrónico *</label>
                   <input
+                    id="contact-email"
+                    autoComplete="email"
                     type="email"
                     required
                     placeholder="ejemplo@correo.com"
@@ -184,8 +192,9 @@ export const ContactSection: React.FC = () => {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-300">Asunto</label>
+                <label htmlFor="contact-subject" className="text-xs font-medium text-slate-300">Asunto</label>
                 <input
+                  id="contact-subject"
                   type="text"
                   placeholder="Propuesta de proyecto / Consulta"
                   value={formData.subject}
@@ -195,8 +204,9 @@ export const ContactSection: React.FC = () => {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-300">Mensaje *</label>
+                <label htmlFor="contact-message" className="text-xs font-medium text-slate-300">Mensaje *</label>
                 <textarea
+                  id="contact-message"
                   required
                   rows={4}
                   placeholder="Escribe los detalles de tu consulta aquí..."

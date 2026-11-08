@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { profileData } from "@/data/profile";
+import { submitContact } from "@/lib/submit-contact";
 import { GithubIcon, LinkedinIcon } from "@/components/icons";
 import {
   Mail,
@@ -33,16 +34,10 @@ export const ContactSection: React.FC = () => {
     setLoading(true);
     setErrorMsg(null);
     try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      const data = await response.json();
-      if (!response.ok || data.success !== true) {
+      const accepted = await submitContact(formData);
+      if (!accepted) {
         setErrorMsg(
-          data.error ||
-            "No se pudo confirmar el envío. Tu mensaje sigue en el formulario.",
+          "No se pudo confirmar el envío. Revisa los campos; tu mensaje sigue en el formulario. Espera antes de reenviarlo o escríbeme por correo.",
         );
         return;
       }

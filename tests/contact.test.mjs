@@ -2,6 +2,16 @@ import { test, mock } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import ts from "typescript";
+const clientSource = await readFile(
+  new URL("../src/lib/submit-contact.ts", import.meta.url),
+  "utf8",
+);
+const clientModule = ts.transpileModule(clientSource, {
+  compilerOptions: { module: ts.ModuleKind.ESNext },
+});
+const { submitContact } = await import(
+  `data:text/javascript,${encodeURIComponent(clientModule.outputText)}`
+);
 
 const source = await readFile(
   new URL("../src/lib/contact.ts", import.meta.url),
@@ -25,6 +35,41 @@ const request = (body) =>
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
+
+test("browser delivery uses FormSubmit AJAX directly, once, with the correct subject and reply address", async (t) => {
+  t.after(() => mock.restoreAll());
+  let destination, payload;
+  const upstream = mock.method(globalThis, "fetch", async (url, options) => {
+    destination = url;
+    payload = JSON.parse(options.body);
+    return Response.json({ success: "true" });
+  });
+  assert.equal(await submitContact(valid), true);
+  assert.equal(
+    destination,
+    "https://formsubmit.co/ajax/6fccd57629dd513354bb7aca10999b24",
+  );
+  assert.equal(payload._subject, valid.subject);
+  assert.equal(payload._replyto, valid.email);
+  assert.equal(payload.message, valid.message);
+  assert.equal(upstream.mock.callCount(), 1);
+});
+
+test("browser delivery rejects negative or missing confirmation without a backup send", async (t) => {
+  t.after(() => mock.restoreAll());
+  for (const [status, body] of [
+    [200, { success: "false" }],
+    [200, { message: "Activate form" }],
+    [500, { success: true }],
+  ]) {
+    const upstream = mock.method(globalThis, "fetch", async () =>
+      Response.json(body, { status }),
+    );
+    assert.equal(await submitContact(valid), false);
+    assert.equal(upstream.mock.callCount(), 1);
+    mock.restoreAll();
+  }
+});
 
 test("HTTP 200 with provider success=false must not show a successful send", async (t) => {
   t.after(() => mock.restoreAll());

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Moon, Sun, ArrowUpRight } from "lucide-react";
+import { getActiveSection } from "@/lib/active-section";
 const links = [
   { id: "inicio", label: "Inicio" },
   { id: "proyectos", label: "Proyectos" },
@@ -12,19 +13,46 @@ export function PortfolioNav() {
   const [theme, setTheme] = useState("dark");
   const [active, setActive] = useState("inicio");
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) setActive(entry.target.id);
-        });
-      },
-      { rootMargin: "-15% 0px -60% 0px", threshold: 0 },
-    );
-    links.forEach(({ id }) => {
-      const section = document.getElementById(id);
-      if (section) observer.observe(section);
+    const sections = links.flatMap(({ id }) => {
+      const element = document.getElementById(id);
+      return element ? [element] : [];
     });
-    return () => observer.disconnect();
+    let frame: number | null = null;
+    function updateActiveSection() {
+      frame = null;
+      // Match the browser's anchor landing position, including responsive offsets.
+      const padding =
+        parseFloat(
+          getComputedStyle(document.documentElement).scrollPaddingTop,
+        ) || 0;
+      const next = getActiveSection(
+        sections.map((section) => ({
+          id: section.id,
+          top:
+            section.getBoundingClientRect().top -
+            (parseFloat(getComputedStyle(section).scrollMarginTop) || 0),
+        })),
+        padding + 1,
+      ); // Allow subpixel rounding at the end of smooth scrolling.
+      if (next) setActive(next);
+    }
+    function scheduleUpdate() {
+      if (frame === null) frame = requestAnimationFrame(updateActiveSection);
+    }
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
+    window.addEventListener("hashchange", scheduleUpdate);
+    // Expanded credentials/repositories can shift sections without a scroll event.
+    const observer = new ResizeObserver(scheduleUpdate);
+    sections.forEach((section) => observer.observe(section));
+    scheduleUpdate();
+    return () => {
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      window.removeEventListener("hashchange", scheduleUpdate);
+      observer.disconnect();
+      if (frame !== null) cancelAnimationFrame(frame);
+    };
   }, []);
   function toggleTheme() {
     const next = theme === "dark" ? "light" : "dark";

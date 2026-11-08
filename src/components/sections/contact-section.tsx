@@ -1,78 +1,57 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { profileData } from '@/data/profile';
-import { GithubIcon, LinkedinIcon } from '@/components/icons';
-import { Mail, Send, CheckCircle2, MessageSquare, Sparkles, AlertCircle, ExternalLink, Copy, Check, Info } from 'lucide-react';
+import React, { useState } from "react";
+import { profileData } from "@/data/profile";
+import { GithubIcon, LinkedinIcon } from "@/components/icons";
+import {
+  Mail,
+  Send,
+  CheckCircle2,
+  MessageSquare,
+  Sparkles,
+  AlertCircle,
+  ExternalLink,
+  Copy,
+  Check,
+} from "lucide-react";
 
 export const ContactSection: React.FC = () => {
-  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [activationNotice, setActivationNotice] = useState<string | null>(null);
   const [copiedEmail, setCopiedEmail] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.email || !formData.message) return;
-
+    if (loading) return;
     setLoading(true);
     setErrorMsg(null);
-    setActivationNotice(null);
-
-    const formToken = '6fccd57629dd513354bb7aca10999b24';
-
     try {
-      // Try posting to FormSubmit activated token
-      const res = await fetch(`https://formsubmit.co/ajax/${formToken}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          _subject: formData.subject || `Nuevo mensaje de portafolio web de ${formData.name}`,
-          message: formData.message,
-          _template: 'table'
-        })
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       });
-
-      const data = await res.json();
-
-      const isOk = res.ok && (data.success === 'true' || data.success === true);
-      const isActivationReq = data.message && data.message.includes('Activation');
-
-      if (isOk) {
-        setSubmitted(true);
-        setFormData({ name: '', email: '', subject: '', message: '' });
-      } else if (isActivationReq) {
-        setSubmitted(true);
-        setActivationNotice('FormSubmit solicitó autorizar este nuevo dominio. Por favor haz clic en "Activate Form" en tu correo bastian.mejias.c@mail.pucv.cl.');
-        setFormData({ name: '', email: '', subject: '', message: '' });
-      } else {
-        // Fallback to server route
-        const apiRes = await fetch('/api/contact', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData)
-        });
-        const apiData = await apiRes.json();
-        if (apiRes.ok && apiData.success) {
-          setSubmitted(true);
-          if (apiData.activationNeeded) {
-            setActivationNotice(apiData.message);
-          }
-          setFormData({ name: '', email: '', subject: '', message: '' });
-        } else {
-          throw new Error(data.message || apiData.error || 'No se pudo procesar el mensaje.');
-        }
+      const data = await response.json();
+      if (!response.ok || data.success !== true) {
+        setErrorMsg(
+          data.error ||
+            "No se pudo confirmar el envío. Tu mensaje sigue en el formulario.",
+        );
+        return;
       }
-    } catch (err: unknown) {
-      console.error('Submit error:', err);
-      setErrorMsg('No se pudo enviar el mensaje automáticamente. Puedes copiar el correo directo abajo.');
+      setSubmitted(true);
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    } catch {
+      setErrorMsg(
+        "No se pudo confirmar el envío. Tu mensaje sigue en el formulario; puedes intentarlo más tarde o escribirme por correo.",
+      );
     } finally {
       setLoading(false);
     }
@@ -84,7 +63,9 @@ export const ContactSection: React.FC = () => {
       setCopiedEmail(true);
       setTimeout(() => setCopiedEmail(false), 2000);
     } catch {
-      setErrorMsg('No se pudo copiar el correo. Puedes seleccionarlo o usar el enlace de contacto.');
+      setErrorMsg(
+        "No se pudo copiar el correo. Puedes seleccionarlo o usar el enlace de contacto.",
+      );
     }
   };
 
@@ -97,7 +78,8 @@ export const ContactSection: React.FC = () => {
           Ponte en Contacto
         </h2>
         <p className="text-sm text-slate-400 mt-1">
-          ¿Tienes un proyecto en mente, una propuesta laboral o deseas colaborar? Escríbeme directamente.
+          ¿Tienes un proyecto en mente, una propuesta laboral o deseas
+          colaborar? Escríbeme directamente.
         </p>
       </div>
 
@@ -110,32 +92,26 @@ export const ContactSection: React.FC = () => {
           </h3>
 
           {submitted ? (
-            <div className="p-6 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-center space-y-3">
+            <div
+              role="status"
+              aria-live="polite"
+              className="p-6 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-center space-y-3"
+            >
               <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
               <h4 className="text-base font-bold text-white">
-                {activationNotice ? '¡Formulario Enviado!' : '¡Mensaje Enviado con Éxito!'}
+                ¡Mensaje enviado!
               </h4>
-              
-              {activationNotice ? (
-                <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-xs text-amber-300 space-y-1 text-left">
-                  <div className="flex items-center gap-1.5 font-semibold text-amber-400">
-                    <Info className="w-4 h-4 shrink-0" />
-                    <span>Activación de nuevo dominio:</span>
-                  </div>
-                  <p>{activationNotice}</p>
-                </div>
-              ) : (
-                <p className="text-xs text-slate-300">
-                  Gracias por comunicarte con Bastián Mejías. Tu mensaje fue enviado a <strong>bastian.mejias.c@mail.pucv.cl</strong> y te responderé a la brevedad.
-                </p>
-              )}
+
+              <p className="text-xs text-slate-300">
+                Tu mensaje fue aceptado por el servicio de envío. Gracias por
+                contactarme; te responderé a la brevedad.
+              </p>
 
               <button
                 onClick={() => {
                   setSubmitted(false);
-                  setActivationNotice(null);
                 }}
                 className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-medium text-white transition-colors"
               >
@@ -143,9 +119,16 @@ export const ContactSection: React.FC = () => {
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form
+              aria-busy={loading}
+              onSubmit={handleSubmit}
+              className="space-y-4"
+            >
               {errorMsg && (
-                <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300 space-y-2">
+                <div
+                  role="alert"
+                  className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300 space-y-2"
+                >
                   <div className="flex items-center gap-2 font-semibold text-rose-400">
                     <AlertCircle className="w-4 h-4 shrink-0" />
                     <span>Aviso de contacto</span>
@@ -156,62 +139,102 @@ export const ContactSection: React.FC = () => {
                     onClick={copyEmailToClipboard}
                     className="px-3 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-white font-medium text-[11px] flex items-center gap-1.5 transition-colors border border-rose-500/30"
                   >
-                    {copiedEmail ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                    <span>{copiedEmail ? '¡Correo Copiado!' : 'Copiar Correo Directo (bastian.mejias.c@mail.pucv.cl)'}</span>
+                    {copiedEmail ? (
+                      <Check className="w-3.5 h-3.5 text-emerald-400" />
+                    ) : (
+                      <Copy className="w-3.5 h-3.5" />
+                    )}
+                    <span>
+                      {copiedEmail
+                        ? "¡Correo Copiado!"
+                        : "Copiar Correo Directo (bastian.mejias.c@mail.pucv.cl)"}
+                    </span>
                   </button>
                 </div>
               )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label htmlFor="contact-name" className="text-xs font-medium text-slate-300">Tu Nombre *</label>
+                  <label
+                    htmlFor="contact-name"
+                    className="text-xs font-medium text-slate-300"
+                  >
+                    Tu Nombre *
+                  </label>
                   <input
                     id="contact-name"
+                    maxLength={120}
                     autoComplete="name"
                     type="text"
                     required
                     placeholder="Ej. María González"
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
                     className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-900/90 text-white border border-white/10 focus:outline-none focus:border-sky-400 transition-colors"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label htmlFor="contact-email" className="text-xs font-medium text-slate-300">Tu Correo Electrónico *</label>
+                  <label
+                    htmlFor="contact-email"
+                    className="text-xs font-medium text-slate-300"
+                  >
+                    Tu Correo Electrónico *
+                  </label>
                   <input
                     id="contact-email"
+                    maxLength={254}
                     autoComplete="email"
                     type="email"
                     required
                     placeholder="ejemplo@correo.com"
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
                     className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-900/90 text-white border border-white/10 focus:outline-none focus:border-sky-400 transition-colors"
                   />
                 </div>
               </div>
 
               <div className="space-y-1.5">
-                <label htmlFor="contact-subject" className="text-xs font-medium text-slate-300">Asunto</label>
+                <label
+                  htmlFor="contact-subject"
+                  className="text-xs font-medium text-slate-300"
+                >
+                  Asunto
+                </label>
                 <input
                   id="contact-subject"
+                  maxLength={200}
                   type="text"
                   placeholder="Propuesta de proyecto / Consulta"
                   value={formData.subject}
-                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, subject: e.target.value })
+                  }
                   className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-900/90 text-white border border-white/10 focus:outline-none focus:border-sky-400 transition-colors"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label htmlFor="contact-message" className="text-xs font-medium text-slate-300">Mensaje *</label>
+                <label
+                  htmlFor="contact-message"
+                  className="text-xs font-medium text-slate-300"
+                >
+                  Mensaje *
+                </label>
                 <textarea
                   id="contact-message"
+                  maxLength={5000}
                   required
                   rows={4}
                   placeholder="Escribe los detalles de tu consulta aquí..."
                   value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, message: e.target.value })
+                  }
                   className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-900/90 text-white border border-white/10 focus:outline-none focus:border-sky-400 transition-colors resize-none"
                 />
               </div>
@@ -252,10 +275,18 @@ export const ContactSection: React.FC = () => {
                   <Mail className="w-4 h-4" />
                 </div>
                 <div className="truncate flex-1">
-                  <p className="text-[10px] text-slate-400">Email Directo (Haz clic para copiar)</p>
-                  <p className="font-semibold truncate">{profileData.socials.email}</p>
+                  <p className="text-[10px] text-slate-400">
+                    Email Directo (Haz clic para copiar)
+                  </p>
+                  <p className="font-semibold truncate">
+                    {profileData.socials.email}
+                  </p>
                 </div>
-                {copiedEmail ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-500 group-hover:text-sky-400" />}
+                {copiedEmail ? (
+                  <Check className="w-4 h-4 text-emerald-400" />
+                ) : (
+                  <Copy className="w-3.5 h-3.5 text-slate-500 group-hover:text-sky-400" />
+                )}
               </button>
 
               <a
@@ -298,7 +329,8 @@ export const ContactSection: React.FC = () => {
               Disponibilidad Laboral
             </div>
             <p className="text-slate-400 text-[11px] leading-relaxed">
-              Disponibilidad inmediata para inserción en mercado laboral a tiempo completo o parcial.
+              Disponibilidad inmediata para inserción en mercado laboral a
+              tiempo completo o parcial.
             </p>
           </div>
         </div>
